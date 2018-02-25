@@ -3,25 +3,29 @@ declare -a images;
 
 build=false
 push=false
-case "$1" in
-    "build")
-        build=true;
-        folder="$2";
-        ;;
-    "push")
-        push=true;
-        folder="$2";
-        ;;
-    *)
-        build=true
-        push=true
-        folder=$1;
-        ;;
-esac
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        "build")
+            build=true;
+            shift
+            ;;
+        "push")
+            push=true;
+            shift
+            ;;
+        *)
+            if ! $build and ! $push; then
+                build=true
+                push=true
+            fi
+            images+=("$1")
+            shift
+            ;;
+    esac
+done
 
-if [ -n "$folder" ]; then
-    images+=("$folder");
-else
+# If not folders are given, use all
+if [ ${#images} -eq 0 ]; then
     for firstLevelFolder in `find . -type d -not -iname '.*' -maxdepth 1`; do
         for secondLevelFolder in `find $firstLevelFolder -type d -not -iname '.*' -mindepth 1 -maxdepth 1`; do
             images[${#images[*]}]="$secondLevelFolder";
