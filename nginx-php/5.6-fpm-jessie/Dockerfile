@@ -9,6 +9,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         nginx
 
+# Change user of nginx
+RUN sed -i -E 's/user(\s+)nginx;/user\1www-data;/' /etc/nginx/nginx.conf
 # Disable the default vhost
 RUN unlink /etc/nginx/conf.d/default.conf
 # Copy the new default vhost configuration
@@ -22,8 +24,8 @@ RUN sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/' /usr/local/etc/php-
 # Set listen correctly for local unix socket
 RUN sed -i 's/listen = 9000/listen = \/var\/run\/php-fpm.sock/' /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN { \
-    echo 'listen.owner = nginx'; \
-    echo 'listen.group = nginx'; \
+    echo 'listen.owner = www-data'; \
+    echo 'listen.group = www-data'; \
 } | tee >> /usr/local/etc/php-fpm.d/zz-docker.conf
 # Copy supervisord configurations
 COPY supervisord/nginx.conf /etc/supervisor/conf.d/
