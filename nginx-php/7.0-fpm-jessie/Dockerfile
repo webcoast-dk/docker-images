@@ -15,6 +15,8 @@ RUN sed -i -E 's/user(\s+)nginx;/user\1www-data;/' /etc/nginx/nginx.conf
 RUN unlink /etc/nginx/conf.d/default.conf
 # Copy the new default vhost configuration
 COPY nginx/default-vhost.conf /etc/nginx/conf.d/
+# Do not show nginx version in headers
+COPY nginx/security.conf /etc/nginx/conf.d/
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends supervisor
@@ -27,6 +29,8 @@ RUN { \
     echo 'listen.owner = www-data'; \
     echo 'listen.group = www-data'; \
 } | tee >> /usr/local/etc/php-fpm.d/zz-docker.conf
+# Do not expose php
+RUN echo 'expose_php = off' > /usr/local/etc/php/conf.d/security.ini
 # Copy supervisord configurations
 COPY supervisord/nginx.conf /etc/supervisor/conf.d/
 COPY supervisord/php-fpm.conf /etc/supervisor/conf.d/
