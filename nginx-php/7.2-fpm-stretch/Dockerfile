@@ -18,10 +18,8 @@ RUN apt-get update && \
 RUN sed -i -E 's/user(\s+)nginx;/user\1www-data;/' /etc/nginx/nginx.conf
 # Disable the default vhost
 RUN unlink /etc/nginx/conf.d/default.conf
-# Copy the new default vhost configuration
-COPY nginx/default-vhost.conf /etc/nginx/conf.d/
-# Do not show nginx version in headers
-COPY nginx/security.conf /etc/nginx/conf.d/
+# Copy the nginx configuration files
+COPY nginx/* /etc/nginx/conf.d/
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends supervisor
