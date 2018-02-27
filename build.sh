@@ -3,26 +3,32 @@ declare -a images;
 
 build=false
 push=false
-while [ "$#" -gt 0 ]; do
-    case "$1" in
-        "build")
-            build=true;
-            shift
-            ;;
-        "push")
-            push=true;
-            shift
-            ;;
-        *)
-            if ! $build and ! $push; then
-                build=true
-                push=true
-            fi
-            images+=("$1")
-            shift
-            ;;
-    esac
-done
+
+if [ "$#" -gt 1 ]; then
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            "build")
+                build=true;
+                shift
+                ;;
+            "push")
+                push=true;
+                shift
+                ;;
+            *)
+                if ! $build and ! $push; then
+                    build=true
+                    push=true
+                fi
+                images+=("$1")
+                shift
+                ;;
+        esac
+    done
+else
+    build=true
+    push=true
+fi
 
 # If not folders are given, use all
 if [ ${#images} -eq 0 ]; then
