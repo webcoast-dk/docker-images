@@ -47,3 +47,12 @@ RUN apt-get update && \
     locale-gen
 
 ENV LC_ALL='en_US.utf8';
+
+# Install ssmtp for mail sending mail to the defined mail relay
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ssmtp
+RUN { \
+    echo 'root='; \
+    echo 'mailhub=smtprelay'; \
+    echo 'FromLineOverride=YES'; \
+} | tee /etc/ssmtp/ssmtp.conf
