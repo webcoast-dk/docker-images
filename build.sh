@@ -4,7 +4,7 @@ declare -a images;
 build=false
 push=false
 
-if [ "$#" -gt 1 ]; then
+if [ "$#" -gt 0 ]; then
     while [ "$#" -gt 0 ]; do
         case "$1" in
             "build")
