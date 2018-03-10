@@ -44,7 +44,7 @@ for path in ${images[*]}; do
         repository=${BASH_REMATCH[1]}
         tag=${BASH_REMATCH[2]}
         if $build; then
-            docker build -t webcoastdk/"$repository":"$tag" "$repository/$tag"
+            docker build --pull -t webcoastdk/"$repository":"$tag" "$repository/$tag"
         fi
         if $push; then
             docker push webcoastdk/"$repository":"$tag"
