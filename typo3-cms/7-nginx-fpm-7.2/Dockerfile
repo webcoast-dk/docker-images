@@ -36,6 +36,8 @@ RUN { \
     echo 'always_populate_raw_post_data=-1'; \
     echo 'max_execution_time=240'; \
     echo 'max_input_vars=1500'; \
+    echo 'upload_max_filesize=10M'; \
+    echo 'post_max_size=12M'; \
 } | tee /usr/local/etc/php/conf.d/zz-typo3.ini
 
 # Add necessary locales
@@ -56,3 +58,11 @@ RUN { \
     echo 'mailhub=smtprelay'; \
     echo 'FromLineOverride=YES'; \
 } | tee /etc/ssmtp/ssmtp.conf
+
+# Install cron
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        cron
+COPY supervisord/cron.conf /etc/supervisor/conf.d/
+# Fix pam related security issue (https://stackoverflow.com/questions/21926465/issues-running-cron-in-docker-on-different-hosts)
+RUN sed -i -E 's/(session\s+required\s+pam_loginuid.so)/#\1/' /etc/pam.d/cron
