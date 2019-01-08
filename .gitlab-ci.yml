@@ -1,0 +1,7 @@
+build:
+    script:
+        ./build.sh
+    when: always
+    only:
+        refs:
+            - master
