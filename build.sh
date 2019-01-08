@@ -16,7 +16,7 @@ if [ "$#" -gt 0 ]; then
                 shift
                 ;;
             *)
-                if ! $build and ! $push; then
+                if [ ${build} == false -a ${push} == false ]; then
                     build=true
                     push=true
                 fi
