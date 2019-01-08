@@ -16,7 +16,7 @@ if [ "$#" -gt 0 ]; then
                 push=true;
                 shift
                 ;;
-            "-v|--verbose")
+            "-v"|"--verbose")
                 verbose=true
                 shift;;
             *)
