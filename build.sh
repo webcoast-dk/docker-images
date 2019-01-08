@@ -3,6 +3,7 @@ declare -a images;
 
 build=false
 push=false
+verbose=false
 
 if [ "$#" -gt 0 ]; then
     while [ "$#" -gt 0 ]; do
@@ -15,6 +16,9 @@ if [ "$#" -gt 0 ]; then
                 push=true;
                 shift
                 ;;
+            "-v|--verbose")
+                verbose=true
+                shift;;
             *)
                 if [ ${build} == false -a ${push} == false ]; then
                     build=true
@@ -43,11 +47,38 @@ for path in ${images[*]}; do
     if [[ "$path" =~ ^\.?\/?([^\/]+)\/([^\/]+)\/?$ ]]; then
         repository=${BASH_REMATCH[1]}
         tag=${BASH_REMATCH[2]}
-        if $build; then
-            docker build --pull -t webcoastdk/"$repository":"$tag" "$repository/$tag"
+        if ${build}; then
+            if ${verbose}; then
+                docker build --pull -t webcoastdk/"$repository":"$tag" "$repository/$tag"
+            else
+                echo -n "Building $repository:$tag... "
+                output=$(docker build --pull -t webcoastdk/"$repository":"$tag" "$repository/$tag" 2>&1)
+                result=$?
+                if [ ${result} -gt 0 ]; then
+                    echo "failed"
+                    echo "$output"
+                    exit 1;
+                else
+                    echo "ok"
+                fi
+            fi
         fi
-        if $push; then
-            docker push webcoastdk/"$repository":"$tag"
+
+        if ${push}; then
+            if [ ${verbose} == true ]; then
+                docker push webcoastdk/"$repository":"$tag"
+            else
+                echo -n "Pushing $repository:$tag..."
+                output=$(docker push webcoastdk/"$repository":"$tag" 2>&1)
+                result=$?
+                if [ ${result} -gt 0 ]; then
+                    echo "failed"
+                    echo "$output"
+                    exit 1;
+                else
+                    echo "ok"
+                fi
+            fi
         fi
     fi
 done
