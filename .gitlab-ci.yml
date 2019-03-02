@@ -1,7 +1,13 @@
 build:
+    before_script:
+        - echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
     script:
-        ./build.sh
+        - ./build.sh
+    after_script:
+        - docker logout
     when: always
     only:
         refs:
             - master
+    tags:
+        - docker
