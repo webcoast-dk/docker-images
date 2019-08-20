@@ -4,7 +4,7 @@ FROM php:7.2-cli-alpine
 RUN EXPECTED_SIGNATURE=$(curl -s https://composer.github.io/installer.sig); \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"; \
     ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');"); \
-    if [[ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]]; then \
+    if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
         >&2 echo 'ERROR: Invalid installer signature'; \
         rm composer-setup.php; \
         exit 1; \
@@ -24,9 +24,9 @@ RUN apk add --no-cache \
 # Create build directory
 RUN mkdir /build
 
-COPY scripts/docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-composer-entrypoint
+RUN chmod +x /usr/local/bin/docker-composer-entrypoint
 
 WORKDIR /build
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["docker-composer-entrypoint"]

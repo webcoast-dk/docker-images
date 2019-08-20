@@ -1,9 +1,19 @@
-FROM php:7.1-cli
+FROM php:7.1-cli-stretch
 
 # Install composer
-COPY install-composer.sh /
-RUN chmod +x /install-composer.sh
-RUN /install-composer.sh
+RUN EXPECTED_SIGNATURE=$(curl -s https://composer.github.io/installer.sig); \
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"; \
+    ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');"); \
+    if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
+        >&2 echo 'ERROR: Invalid installer signature'; \
+        rm composer-setup.php; \
+        exit 1; \
+    fi; \
+    \
+    php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer; \
+    RESULT=$?; \
+    rm composer-setup.php; \
+    exit ${RESULT}
 
 # Install git
 RUN apt-get update && \
@@ -20,7 +30,8 @@ RUN apt-get update && \
         echo 'en_US.utf8 UTF-8'; \
     } | tee /etc/locale.gen && \
     locale-gen
-ENV LC_ALL='en_US.utf8';
+
+ENV LC_ALL='en_US.utf8'
 
 # Add php zip extension as fallback
 RUN apt-get update && \
