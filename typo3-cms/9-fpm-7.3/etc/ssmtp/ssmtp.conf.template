@@ -1,0 +1,3 @@
+root=
+mailhub=${SMTP_HOST_AND_PORT}
+FromLineOverride=YES
