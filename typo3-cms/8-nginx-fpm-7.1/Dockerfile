@@ -41,7 +41,7 @@ RUN apt-get update && \
     } | tee /etc/locale.gen && \
     locale-gen
 
-ENV LC_ALL='en_US.utf8';
+ENV LC_ALL='en_US.utf8'
 
 # Install ssmtp for mail sending mail to the defined mail relay
 RUN apt-get update && \
