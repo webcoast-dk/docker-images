@@ -9,8 +9,16 @@ RUN apt-get update && \
     apt-get purge -y ${PHPIZE_DEPS} libpng-dev libjpeg62-turbo-dev libfreetype6-dev libxml2-dev && \
     apt-get autoremove -y
 
+# Enable verbose error reporting
+RUN { \
+    echo 'error_reporting = E_ALL'; \
+    echo 'display_errors = Off'; \
+    echo 'log_errors = On'; \
+} > /usr/local/etc/php/conf.d/error_reporting.ini
+
 # Enable max_requests for PHP fpm
 RUN sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/;catch_workers_output = yes/catch_workers_output = yes/' /usr/local/etc/php-fpm.d/www.conf
 RUN { \
     echo 'listen.owner = www-data'; \
     echo 'listen.group = www-data'; \
@@ -35,12 +43,21 @@ RUN apt-get update && \
     } | tee /etc/locale.gen && \
     locale-gen
 
-ENV LC_ALL='en_US.utf8';
+ENV LC_ALL='en_US.utf8'
 
 # Install ssmtp for mail sending mail to the defined mail relay
-RUN apt-get install -y ssmtp
+RUN apt-get install -y --no-install-recommends ssmtp
+COPY ./etc/ssmtp/ssmtp.conf.template /etc/ssmtp/ssmtp.conf.template
+
+# Make php use SSMTP instead of sendmail
 RUN { \
-    echo 'root='; \
-    echo 'mailhub=smtprelay'; \
-    echo 'FromLineOverride=YES'; \
-} | tee /etc/ssmtp/ssmtp.conf
+    echo 'sendmail_path = /usr/sbin/ssmtp -t -i'; \
+} | tee /usr/local/etc/php/conf.d/sendmail.ini
+
+
+COPY ./scripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["php-fpm"]
