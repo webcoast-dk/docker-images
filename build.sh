@@ -40,7 +40,7 @@ fi
 
 # If not folders are given, use all
 if [ ${#images} -eq 0 ]; then
-    for firstLevelFolder in `find . -type d -not -iname '.*' -maxdepth 1`; do
+    for firstLevelFolder in `find . -maxdepth 1 -type d -not -iname '.*'`; do
         for secondLevelFolder in `find $firstLevelFolder -mindepth 1 -maxdepth 1 -type d -not -iname '.*'`; do
             images[${#images[*]}]="$secondLevelFolder";
         done
