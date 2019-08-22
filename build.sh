@@ -41,14 +41,14 @@ fi
 # If not folders are given, use all
 if [ ${#images} -eq 0 ]; then
     for firstLevelFolder in `find . -maxdepth 1 -type d -not -iname '.*'`; do
-        for secondLevelFolder in `find $firstLevelFolder -mindepth 1 -maxdepth 1 -type d -not -iname '.*'`; do
+        for secondLevelFolder in `find $firstLevelFolder -mindepth 1 -maxdepth 1 -type d -not -iname '.*' -not -name 'template'`; do
             images[${#images[*]}]="$secondLevelFolder";
         done
     done
 fi
 
 for path in ${images[*]}; do
-    if [[ "$path" =~ ^\.?\/?([^\/]+)\/([^\/]+)\/?$ ]]; then
+    if [ -d "$path" ] && [[ ! "$path" =~ template$ ]] && [[ "$path" =~ ^\.?\/?([^\/]+)\/([^\/]+)\/?$ ]]; then
         repository=${BASH_REMATCH[1]}
         tag=${BASH_REMATCH[2]}
         if ${build}; then

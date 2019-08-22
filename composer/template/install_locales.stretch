@@ -1,0 +1,8 @@
+# Add necessary locales
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends locales && \
+    { \
+        echo 'en_US.utf8 UTF-8'; \
+    } | tee /etc/locale.gen && \
+    locale-gen
+ENV LC_ALL='en_US.utf8'
