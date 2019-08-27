@@ -1,0 +1,6 @@
+defaults
+host ${SMTP_HOST}
+port ${SMTP_PORT}
+
+account default
+from ${SMTP_FROM}

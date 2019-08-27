@@ -1,0 +1,1 @@
+CMD ["crond", "-f", "-L /dev/stdout"]
