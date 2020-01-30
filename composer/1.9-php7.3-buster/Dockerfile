@@ -18,7 +18,7 @@ RUN EXPECTED_SIGNATURE=$(curl -s https://composer.github.io/installer.sig); \
         exit 1; \
     fi; \
     \
-    php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer --version=1.9.1; \
+    php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer --version=1.9.2; \
     RESULT=$?; \
     rm composer-setup.php; \
     exit ${RESULT}
