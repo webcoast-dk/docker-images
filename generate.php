@@ -5,7 +5,7 @@ $baseDir = dirname(__FILE__);
 
 passthru("docker build ${baseDir}/docker/builder -t webcoast_docker_images_builder");
 
-$phpVersions = ['5.6', '7.0', '7.1', '7.2', '7.3'];
+$phpVersions = ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4'];
 $distributions = [
     'stretch' => [
         'minPhpVersion' => '5.6',
@@ -13,7 +13,7 @@ $distributions = [
     ],
     'buster' => [
         'minPhpVersion' => '7.1',
-        'maxPhpVersion' => '7.3'
+        'maxPhpVersion' => '7.4'
     ],
     'alpine' => [
         'minPhpVersion' => '5.6',
@@ -21,7 +21,7 @@ $distributions = [
     ],
     'alpine3.10' => [
         'minPhpVersion' => '7.1',
-        'maxPhpVersion' => '7.3'
+        'maxPhpVersion' => '7.4'
     ]
 ];
 
