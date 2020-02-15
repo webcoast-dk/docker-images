@@ -6,12 +6,13 @@ $localDistributions = ['', 'alpine'];
 
 foreach ($nginxVersions as $nginxVersion) {
     foreach ($localDistributions as $distribution) {
-        preg_match('/^(\d+\.\d+)/', $nginxVersion, $nginxMajorVersion);
-        $tag = $nginxMajorVersion[1] . (!empty($distribution) ? '-' . $distribution : '');
-        $versionsToBuild[$tag] = [
-            'tag' => $tag,
-            'nginxVersion' => $nginxMajorVersion[1],
-            'distribution' => $distribution ? '-' . $distribution : ''
-        ];
+        if (preg_match('/^(\d+\.\d+)/', $nginxVersion, $nginxMajorVersion)) {
+            $tag = $nginxMajorVersion[1] . (!empty($distribution) ? '-' . $distribution : '');
+            $versionsToBuild[$tag] = [
+                'tag' => $tag,
+                'nginxVersion' => $nginxMajorVersion[1],
+                'distribution' => $distribution ? '-' . $distribution : ''
+            ];
+        }
     }
 }
