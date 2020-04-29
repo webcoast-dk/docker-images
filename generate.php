@@ -3,7 +3,10 @@
 
 $baseDir = dirname(__FILE__);
 
-passthru("docker build ${baseDir}/docker/builder -t webcoast_docker_images_builder");
+$dockerNoCache = in_array('--no-cache', $argv) ? ' --no-cache' : '';
+$dockerPull = in_array('--pull', $argv) ? ' --pull' : '';
+
+passthru("docker build${dockerPull}${dockerNoCache} ${baseDir}/docker/builder -t webcoast_docker_images_builder");
 
 $phpVersions = ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4'];
 $distributions = [
