@@ -1,0 +1,91 @@
+name: Build docker images
+on:
+    push:
+        branches:
+            - master
+    schedule:
+        -   cron: '0 0 * * *'
+jobs:
+    build:
+        name: Build image ${{ matrix.image }}
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                image: [
+                    # IMAGE_LIST_START
+                    'composer/1.10-php5.6-stretch',
+                    'composer/1.10-php5.6-alpine',
+                    'composer/1.10-php7.0-stretch',
+                    'composer/1.10-php7.0-alpine',
+                    'composer/1.10-php7.1-stretch',
+                    'composer/1.10-php7.1-buster',
+                    'composer/1.10-php7.1-alpine3.10',
+                    'composer/1.10-php7.2-stretch',
+                    'composer/1.10-php7.2-buster',
+                    'composer/1.10-php7.2-alpine3.10',
+                    'composer/1.10-php7.3-stretch',
+                    'composer/1.10-php7.3-buster',
+                    'composer/1.10-php7.3-alpine3.10',
+                    'composer/1.10-php7.4-buster',
+                    'composer/1.10-php7.4-alpine3.10',
+                    'composer/1.9-php5.6-stretch',
+                    'composer/1.9-php5.6-alpine',
+                    'composer/1.9-php7.0-stretch',
+                    'composer/1.9-php7.0-alpine',
+                    'composer/1.9-php7.1-stretch',
+                    'composer/1.9-php7.1-buster',
+                    'composer/1.9-php7.1-alpine3.10',
+                    'composer/1.9-php7.2-stretch',
+                    'composer/1.9-php7.2-buster',
+                    'composer/1.9-php7.2-alpine3.10',
+                    'composer/1.9-php7.3-stretch',
+                    'composer/1.9-php7.3-buster',
+                    'composer/1.9-php7.3-alpine3.10',
+                    'composer/1.9-php7.4-buster',
+                    'composer/1.9-php7.4-alpine3.10',
+                    'composer/1.8-php5.6-stretch',
+                    'composer/1.8-php5.6-alpine',
+                    'composer/1.8-php7.0-stretch',
+                    'composer/1.8-php7.0-alpine',
+                    'composer/1.8-php7.1-stretch',
+                    'composer/1.8-php7.1-buster',
+                    'composer/1.8-php7.1-alpine3.10',
+                    'composer/1.8-php7.2-stretch',
+                    'composer/1.8-php7.2-buster',
+                    'composer/1.8-php7.2-alpine3.10',
+                    'composer/1.8-php7.3-stretch',
+                    'composer/1.8-php7.3-buster',
+                    'composer/1.8-php7.3-alpine3.10',
+                    'cron-php/php5.6-stretch',
+                    'cron-php/php5.6-alpine',
+                    'cron-php/php7.0-stretch',
+                    'cron-php/php7.0-alpine',
+                    'cron-php/php7.1-stretch',
+                    'cron-php/php7.1-buster',
+                    'cron-php/php7.1-alpine3.10',
+                    'cron-php/php7.2-stretch',
+                    'cron-php/php7.2-buster',
+                    'cron-php/php7.2-alpine3.10',
+                    'cron-php/php7.3-stretch',
+                    'cron-php/php7.3-buster',
+                    'cron-php/php7.3-alpine3.10',
+                    'cron-php/php7.4-buster',
+                    'cron-php/php7.4-alpine3.10',
+                    'nginx/1.18',
+                    'nginx/1.18-alpine',
+                    'nginx/1.17',
+                    'nginx/1.17-alpine',
+                    'nginx/1.16',
+                    'nginx/1.16-alpine',
+                    'nginx/1.15',
+                    'nginx/1.15-alpine'
+                    # IMAGE_LIST_END
+                ]
+        steps:
+            -   uses: actions/checkout@v2
+            -   name: Log into docker registry
+                run: echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+            -   name: Build image
+                run: ./build.sh build ${{ matrix.image }}
+            -   name: Push image
+                run: ./build.sh push ${{ matrix.image }}

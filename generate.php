@@ -48,6 +48,7 @@ while ($directoryIterator->valid()) {
     $directoryIterator->next();
 }
 
+$buildMatrix = [];
 foreach ($productsToBuilds as $productDirectory) {
     if (file_exists($productDirectory . DIRECTORY_SEPARATOR . 'generate_versions.php')) {
         $versionsToBuild = [];
@@ -56,6 +57,7 @@ foreach ($productsToBuilds as $productDirectory) {
 
         foreach ($versionsToBuild as $tag => $config) {
             if (!empty($tag)) {
+                $buildMatrix[] = basename($productDirectory) . DIRECTORY_SEPARATOR . $tag;
                 // Remove existing directory to clean up old files
                 if (file_exists($productDirectory . DIRECTORY_SEPARATOR . $tag)) {
                     passthru('rm -r ' . $productDirectory . DIRECTORY_SEPARATOR . $tag);
@@ -97,3 +99,9 @@ foreach ($productsToBuilds as $productDirectory) {
         }
     }
 }
+
+$workflowFile = $baseDir . DIRECTORY_SEPARATOR . '.github' . DIRECTORY_SEPARATOR . 'workflows' . DIRECTORY_SEPARATOR . 'build.yml';
+$workflowContent = file_get_contents($workflowFile);
+preg_match('/(# IMAGE_LIST_START).*?([ ]+)(# IMAGE_LIST_END)/s', $workflowContent, $matches);
+$workflowContent = preg_replace('/(# IMAGE_LIST_START).*?([ ]+)(# IMAGE_LIST_END)/s', $matches[1] . "\n${matches[2]}'" . implode("',\n" . $matches[2] . "'", $buildMatrix) . "'\n${matches[2]}${matches[3]}", $workflowContent);
+file_put_contents($workflowFile, $workflowContent);
