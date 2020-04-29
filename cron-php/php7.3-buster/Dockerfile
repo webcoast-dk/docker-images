@@ -8,7 +8,7 @@ RUN apt-get update && \
 
 COPY ./etc/msmtprc.template /etc/msmtprc.template
 
-# Make php use SSMTP instead of sendmail
+# Make php use msmtp instead of sendmail
 RUN { \
     echo 'sendmail_path = /usr/bin/msmtp -t'; \
 } | tee /usr/local/etc/php/conf.d/sendmail.ini
