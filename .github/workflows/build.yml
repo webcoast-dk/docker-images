@@ -86,6 +86,6 @@ jobs:
             -   name: Log into docker registry
                 run: echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
             -   name: Build image
-                run: ./build.sh build ${{ matrix.image }}
+                run: ./build.sh -v build ${{ matrix.image }}
             -   name: Push image
-                run: ./build.sh push ${{ matrix.image }}
+                run: ./build.sh -v push ${{ matrix.image }}
