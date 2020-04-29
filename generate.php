@@ -36,20 +36,16 @@ $ignoredDirectories = [
     'mysql'
 ];
 
-$productsToBuilds = [];
+$productsToBuild = [];
 
-$directoryIterator = new DirectoryIterator($baseDir);
-while ($directoryIterator->valid()) {
-    if ($directoryIterator->isDot() || !$directoryIterator->isDir() || $directoryIterator->getFilename()[0] === '.' || in_array($directoryIterator->getFilename(), $ignoredDirectories)) {
-        $directoryIterator->next();
-        continue;
+foreach (array_diff(scandir($baseDir), ['.', '..']) as $file) {
+    if (is_dir($baseDir . DIRECTORY_SEPARATOR . $file) && strpos($file, '.') !== 0 && !in_array($file, $ignoredDirectories)) {
+        $productsToBuild[] = $baseDir . DIRECTORY_SEPARATOR . $file;
     }
-    $productsToBuilds[] = $directoryIterator->getPathname();
-    $directoryIterator->next();
 }
 
 $buildMatrix = [];
-foreach ($productsToBuilds as $productDirectory) {
+foreach ($productsToBuild as $productDirectory) {
     if (file_exists($productDirectory . DIRECTORY_SEPARATOR . 'generate_versions.php')) {
         $versionsToBuild = [];
 
