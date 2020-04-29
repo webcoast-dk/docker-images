@@ -1,0 +1,19 @@
+name: Update check
+on:
+    push:
+        branches:
+            - master
+    schedule:
+        - cron: '0 0 * * *'
+jobs:
+    check_for_changes:
+        name: Generate docker files and check for changes
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+            -   name: Generate docker files
+                run: ./generate.php
+            -   name: Check for changed files
+                run: |
+                    changes=$(git status --porcelain | wc -l)
+                    if [ ${changes} -gt 0 ]; then git diff; exit 1; else exit 0; fi
