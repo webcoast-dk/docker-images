@@ -71,6 +71,8 @@ jobs:
                     'cron-php/php7.3-alpine3.10',
                     'cron-php/php7.4-buster',
                     'cron-php/php7.4-alpine3.10',
+                    'nginx/1.19',
+                    'nginx/1.19-alpine',
                     'nginx/1.18',
                     'nginx/1.18-alpine',
                     'nginx/1.17',
