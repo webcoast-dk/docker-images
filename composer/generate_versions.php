@@ -5,6 +5,9 @@ $composerVersions = explode(PHP_EOL, shell_exec("docker run --rm -i webcoast_doc
 $phpVersionConstraints = [
     '1.8' => [
         'max' => '7.3'
+    ],
+    '2.0' => [
+        'min' => '7.1'
     ]
 ];
 
