@@ -1,4 +1,4 @@
-# Composer 1.10.8 with PHP 7.3
+# Composer 1.10.17 with PHP 7.3
 
 This image is meant to be used in build processes to run the build in the exact environment, the application
 later runs in.
